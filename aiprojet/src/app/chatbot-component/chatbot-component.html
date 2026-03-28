@@ -1,0 +1,113 @@
+<div class="app-shell">
+  <div class="premium-card">
+    <div class="flex flex-col gap-6">
+      <div class="space-y-2">
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight">Assistant IA premium</h1>
+        <p class="text-lg text-slate-500 max-w-2xl">
+          Posez votre question, dictez votre voix ou envoyez un document pour recevoir une analyse éclairée
+          et contextualisée en quelques instants.
+        </p>
+      </div>
+
+      <div class="premium-panel premium-panel-grid">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <label class="text-lg font-semibold uppercase tracking-[0.2em]">Poser votre question</label>
+          @if (reponsechat){
+            <button
+              (click)="metrefalse()"
+              class="premium-button premium-button-border">
+              Voice ON
+            </button>
+          } @else {
+            <button
+              (click)="metretrue()"
+              class="premium-button premium-button-border">
+              Voice OFF
+            </button>
+          }
+        </div>
+
+        <input
+          [(ngModel)]="question"
+          type="text"
+          placeholder="Écrivez votre question..."
+          class="premium-input"
+        />
+
+        <div class="flex flex-wrap gap-3">
+          <button
+            (click)="startListening()"
+            [disabled]="isListening"
+            class="premium-button premium-button-gradient disabled:opacity-60 disabled:cursor-not-allowed">
+            {{ isListening ? 'Écoute...' : 'Dictée vocale' }}
+          </button>
+
+          @if (isListening){
+            <button
+              (click)="stopListening()"
+              [disabled]="!isListening"
+              class="premium-button premium-button-border">
+              Arrêter
+            </button>
+          }
+
+          @if (speking){
+            <button
+              (click)="stopSpeaking()"
+              class="premium-button premium-button-border">
+              Couper la voix
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="premium-panel">
+        <div class="relative w-full">
+          <input
+            type="file"
+            id="file-upload"
+            (change)="uploadFile($event)"
+            class="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
+          />
+          <label
+            for="file-upload"
+            class="flex items-center justify-center gap-3 px-6 py-4 premium-button premium-button-border cursor-pointer">
+            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v8m0-8l3 3m-3-3l-3 3M12 4v8"></path>
+            </svg>
+            Choisir un fichier
+          </label>
+        </div>
+      </div>
+
+      <div class="flex justify-start">
+        <button
+          (click)="askAgent()"
+          class="premium-button premium-button-gradient">
+          Envoyer
+        </button>
+      </div>
+
+      <div class="premium-response text-white">
+        @if (p) {
+          <div class="premium-loader">
+            <div class="spinner"></div>
+            <span class="text-lg font-medium">Analyse en cours...</span>
+          </div>
+        }
+
+        @if (response) {
+          <div class="max-w-none text-white leading-7 whitespace-pre-wrap break-words">
+            <markdown [data]="response"></markdown>
+          </div>
+        }
+
+        @if (!p && !response) {
+          <div class="text-white/80 text-center">
+            La réponse s’affichera ici après l’envoi de votre question.
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
